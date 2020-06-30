@@ -157,4 +157,4 @@ run-grpc:
 
 example:
 	make init package="github.com/ciazhar/generate"
-	make generate package="github.com/ciazhar/generate" name="List" type="*list.List"
+	make generate package="github.com/ciazhar/generate" name="List"
