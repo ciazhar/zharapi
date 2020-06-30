@@ -8,17 +8,17 @@
 
 ## Installation
 ```bash
-make install
+$ make install
 ```
 
 ## Getting Started
 ```bash
-make init package="github.com/ciazhar/zharapi"
+$ make init package="github.com/ciazhar/zharapi"
 ```
 
 ## Create a new module 
 ```bash
-make generate package="github.com/ciazhar/zharapi" name="List"
+$ make generate package="github.com/ciazhar/zharapi" name="List"
 ```
 And you should register generated services to the `cmd/main.go` instance:
 ```diff
@@ -26,7 +26,8 @@ func InitHTTP(application *app.Application) error {
 	//config router api
 	router := gin.New()
 +	list.InitHTTP(router,"/list", application)
--
+-   //TODO
+
 	//middleware
 	router.Use(gin.Recovery())
 	router.Use(cors.Default())
@@ -52,8 +53,8 @@ func InitGRPC(application *app.Application) error {
 	s := grpc.NewServer()
 
 	//init client
-+       list.InitGRPC(s,application)
--	
++   list.InitGRPC(s,application)
+-	//TODO
 
 	//serve grpc server
 	log.Info().Caller().Msg("Running GRPC in port : " + address)
@@ -64,9 +65,9 @@ func InitGRPC(application *app.Application) error {
 ## Start Server
 - Running HTTP Server 
 ```bash
-make run
+$ make run
 ```
 - Running GRPC Server
 ```bash
-make run-grpc
+$ make run-grpc
 ```
