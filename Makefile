@@ -156,5 +156,5 @@ run-grpc:
 	go run cmd/grpc-main.go
 
 example:
-	make init package="github.com/ciazhar/generate"
-	make generate package="github.com/ciazhar/generate" name="List"
+	make init package="github.com/ciazhar/zharapi"
+	make generate package="github.com/ciazhar/zharapi" name="List"

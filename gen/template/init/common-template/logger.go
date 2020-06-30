@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"github.com/ciazhar/generate/gen/template/data"
+	"github.com/ciazhar/zharapi/gen/template/data"
 	"os"
 	"strings"
 	"text/template"
