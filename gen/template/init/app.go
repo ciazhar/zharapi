@@ -30,6 +30,7 @@ import (
 	"{{.Package}}/common/logger"
 	"{{.Package}}/common/validator"
 	"github.com/gin-gonic/gin"
+	"github.com/go-pg/pg/v9"
 	"os"
 )
 
