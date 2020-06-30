@@ -6,8 +6,11 @@ install:
 	github.com/betacraft/easytags
 
 init: init-gomod \
+	init-config-file \
 	init-app \
 	init-env \
+	init-main \
+	init-grpc \
 	init-error \
 	init-logger \
 	init-pg \
@@ -18,6 +21,10 @@ init: init-gomod \
 init-gomod:
 	[ -f ./go.mod ] && echo exists || go mod init $(package) ;
 
+init-config-file:
+	go run gen/template/init/config.go \
+		-package=$(package) > config.json ;
+
 init-app:
 	mkdir -p app
 	go run gen/template/init/app.go \
@@ -27,6 +34,16 @@ init-env:
 	mkdir -p common/env
 	go run gen/template/init/common-template/env.go \
 		-package=$(package) > common/env/env.go
+
+init-main:
+	mkdir -p cmd
+	go run gen/template/init/main.go \
+		-package=$(package) > cmd/main.go ;
+
+init-grpc:
+	mkdir -p cmd
+	go run gen/template/init/grpc-main.go \
+		-package=$(package) > cmd/grpc-main.go ;
 
 init-error:
 	mkdir -p common/error
