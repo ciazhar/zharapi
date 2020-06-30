@@ -149,6 +149,12 @@ generate-grpc-controller:
 		-type=$(type) \
 		-package=$(package) > src/$(name)/controller/grpc/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')_grpc_controller.go
 
+run:
+	go run cmd/main.go
+
+run-grpc:
+	go run cmd/grpc-main.go
+
 example:
 	make init package="github.com/ciazhar/generate"
 	make generate package="github.com/ciazhar/generate" name="List" type="*list.List"
