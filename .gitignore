@@ -5,3 +5,5 @@ common
 go.mod
 go.sum
 grpc
+cmd
+config.json
