@@ -25,7 +25,7 @@ And you should register generated services to the `cmd/main.go` instance:
 func InitHTTP(application *app.Application) error {
 	//config router api
 	router := gin.New()
-+	list.InitHTTP(router,"/list", application)
++   list.InitHTTP(router,"/list", application)
 -   //TODO
 
 	//middleware
@@ -54,7 +54,7 @@ func InitGRPC(application *app.Application) error {
 
 	//init client
 +   list.InitGRPC(s,application)
--	//TODO
+-   //TODO
 
 	//serve grpc server
 	log.Info().Caller().Msg("Running GRPC in port : " + address)
