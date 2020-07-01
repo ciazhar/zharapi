@@ -50,7 +50,11 @@ func (u {{.Name }}Controller) Store(ctx context.Context, {{.Name | toLower }} *g
 }
 
 func (u {{.Name }}Controller) Fetch(request *golang.{{.Name }}All{{.Name }}Request, server golang.{{.Name }}Service_FetchServer) error {
-	{{.Name | toLower }}, err := u.uc.Fetch(rest.NewParam())
+	param := rest.NewParam()
+	param.Offset = 0
+	param.Limit = 10
+
+	{{.Name | toLower }}, err := u.uc.Fetch(param)
 	if err != nil {
 		return err
 	}
