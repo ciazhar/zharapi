@@ -86,14 +86,12 @@ generate-init:
 	mkdir -p src/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')
 	go run gen/template/module/init.go \
 		-name=$(name) \
-		-type=$(type) \
 		-package=$(package) > src/$(name)/init.go
 
 generate-model:
 	mkdir -p src/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')/model
 	go run gen/template/module/model/model.go \
 		-name=$(name) \
-		-type=$(type) \
 		-package=$(package) > src/$(name)/model/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]').go
 
 generate-proto:
@@ -102,7 +100,6 @@ generate-proto:
 	mkdir -p grpc/generated/swagger
 	go run gen/template/module/model/proto.go \
 		-name=$(name) \
-		-type=$(type) \
 		-package=$(package) > grpc/proto/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]').proto
 	easytags src/$(name)/model/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]').go
 	protoc -I/usr/local/include -I. \
@@ -118,35 +115,30 @@ generate-postgres-repository:
 	mkdir -p src/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')/repository/postgres
 	go run gen/template/module/repository/pg.go \
     	-name=$(name) \
-    	-type=$(type) \
     	-package=$(package) > src/$(name)/repository/postgres/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')_pg_repo.go
 
 generate-postgres-validator:
 	mkdir -p src/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')/validator/postgres
 	go run gen/template/module/validator/pg.go \
 		-name=$(name) \
-		-type=$(type) \
 		-package=$(package) > src/$(name)/validator/postgres/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')_pg_validator.go
 
 generate-usecase:
 	mkdir -p src/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')/usecase
 	go run gen/template/module/usecase/usecase.go \
 		-name=$(name) \
-		-type=$(type) \
 		-package=$(package) > src/$(name)/usecase/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')_usecase.go
 
 generate-rest-controller:
 	mkdir -p src/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')/controller/rest
 	go run gen/template/module/controller/rest.go \
 		-name=$(name) \
-		-type=$(type) \
 		-package=$(package) > src/$(name)/controller/rest/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')_rest_controller.go
 
 generate-grpc-controller:
 	mkdir -p src/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')/controller/grpc
 	go run gen/template/module/controller/grpc.go \
 		-name=$(name) \
-		-type=$(type) \
 		-package=$(package) > src/$(name)/controller/grpc/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')_grpc_controller.go
 
 run:
