@@ -49,7 +49,7 @@ func (u {{.Name }}Controller) Store(ctx context.Context, {{.Name | toLower }} *g
 	return {{.Name | toLower }}, nil
 }
 
-func (u {{.Name }}Controller) Fetch(request *golang.{{.Name }}All{{.Name }}Request, server golang.{{.Name }}Service_FetchServer) error {
+func (u {{.Name }}Controller) Fetch(request *golang.ListAll{{.Name }}Request, server golang.{{.Name }}Service_FetchServer) error {
 	param := rest.NewParam()
 	param.Offset = 0
 	param.Limit = 10
@@ -82,7 +82,7 @@ func (u {{.Name }}Controller) Fetch(request *golang.{{.Name }}All{{.Name }}Reque
 		})
 	}
 
-	return server.Send(&golang.{{.Name }}All{{.Name }}Response{
+	return server.Send(&golang.ListAll{{.Name }}Response{
 		{{.Name }}: new{{.Name }},
 	})
 }
