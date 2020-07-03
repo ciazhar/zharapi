@@ -147,6 +147,9 @@ run:
 run-grpc:
 	go run cmd/grpc-main.go
 
+run-gateway:
+	go run cmd/gateway.go
+
 example:
 	make init package="github.com/ciazhar/zharapi"
 	make generate package="github.com/ciazhar/zharapi" name="List"
