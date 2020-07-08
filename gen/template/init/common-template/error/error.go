@@ -40,6 +40,12 @@ func New(err error) Error {
 	return Error{Error: err.Error()}
 }
 
+func NewF(err string) Error {
+	return Error{
+		Error:  err,
+	}
+}
+
 func NewS(err error, status Status) Error {
 	return Error{Error: err.Error(), Status: status}
 }
