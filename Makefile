@@ -4,6 +4,7 @@ install:
     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
     github.com/golang/protobuf/protoc-gen-go
 	github.com/betacraft/easytags
+	github.com/fatih/gomodifytags
 
 init: init-gomod \
 	init-config-file \
@@ -11,11 +12,14 @@ init: init-gomod \
 	init-env \
 	init-main \
 	init-grpc \
+	init-middleware \
+	init-gateway \
 	init-error \
 	init-logger \
 	init-pg \
 	init-validator \
-	init-rest
+	init-rest \
+	init-string
 	go mod tidy
 
 init-gomod:
@@ -32,7 +36,7 @@ init-app:
 
 init-env:
 	mkdir -p common/env
-	go run gen/template/init/common-template/env.go \
+	go run gen/template/init/common-template/env/env.go \
 		-package=$(package) > common/env/env.go
 
 init-main:
@@ -45,32 +49,52 @@ init-grpc:
 	go run gen/template/init/grpc-main.go \
 		-package=$(package) > cmd/grpc-main.go ;
 
+init-gateway:
+	mkdir -p cmd
+	go run gen/template/init/gateway.go \
+		-package=$(package) > cmd/gateway.go ;
+
+init-middleware:
+	mkdir -p common/middleware
+	go run gen/template/init/common-template/middleware/auth.go \
+		-package=$(package) > common/middleware/auth.go
+	go run gen/template/init/common-template/middleware/cors.go \
+		-package=$(package) > common/middleware/cors.go
+
 init-error:
 	mkdir -p common/error
-	go run gen/template/init/common-template/error.go \
+	go run gen/template/init/common-template/error/error.go \
 		-package=$(package) > common/error/error.go
+	easytags common/error/error.go
 
 init-logger:
 	mkdir -p common/logger
-	go run gen/template/init/common-template/logger.go \
+	go run gen/template/init/common-template/logger/logger.go \
 		-package=$(package) > common/logger/log.go
 
 init-pg:
 	mkdir -p common/db/pg
-	go run gen/template/init/common-template/pg.go \
+	go run gen/template/init/common-template/db/pg.go \
 		-package=$(package) > common/db/pg/pg.go
 
 init-validator:
 	mkdir -p common/validator
-	go run gen/template/init/common-template/validator.go \
+	go run gen/template/init/common-template/validator/validator.go \
 		-package=$(package) > common/validator/validator.go
+
+init-string:
+	mkdir -p common/string
+	go run gen/template/init/common-template/string/string.go \
+		-package=$(package) > common/string/string.go
 
 init-rest:
 	mkdir -p common/rest
-	go run gen/template/init/common-template/rest.go \
+	go run gen/template/init/common-template/rest/rest.go \
 		-package=$(package) > common/rest/param.go
-	go run gen/template/init/common-template/gin_rest.go \
+	go run gen/template/init/common-template/rest/gin_rest.go \
 		-package=$(package) > common/rest/gin_param.go
+	go run gen/template/init/common-template/rest/response.go \
+			-package=$(package) > common/rest/response.go
 
 generate: generate-init \
 	generate-model \
