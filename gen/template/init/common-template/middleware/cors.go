@@ -18,7 +18,13 @@ func main() {
 	flag.Parse()
 
 	t := template.Must(template.New("queue").Funcs(funcMap).Parse(CORSTemplate))
-	t.Execute(os.Stdout, d)
+
+	f, err := os.Create("common/middleware/cors.go")
+	if err != nil {
+		panic(err)
+	}
+
+	t.Execute(f, d)
 }
 
 var CORSTemplate = `

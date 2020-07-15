@@ -19,7 +19,13 @@ func main() {
 	flag.Parse()
 
 	t := template.Must(template.New("template").Funcs(funcMap).Parse(Template))
-	t.Execute(os.Stdout, d)
+
+	f, err := os.Create("src/" + strings.ToLower(d.Name) + "/init.go")
+	if err != nil {
+		panic(err)
+	}
+
+	t.Execute(f, d)
 }
 
 var Template = `

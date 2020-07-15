@@ -18,7 +18,13 @@ func main() {
 	flag.Parse()
 
 	t := template.Must(template.New("queue").Funcs(funcMap).Parse(RestTemplate))
-	t.Execute(os.Stdout, d)
+
+	f, err := os.Create("common/rest/response.go")
+	if err != nil {
+		panic(err)
+	}
+
+	t.Execute(f, d)
 }
 
 var RestTemplate = `

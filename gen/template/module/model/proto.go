@@ -19,7 +19,13 @@ func main() {
 	flag.Parse()
 
 	t := template.Must(template.New("t").Funcs(funcMap).Parse(ProtoTemplate))
-	t.Execute(os.Stdout, d)
+
+	f, err := os.Create("grpc/proto/" + strings.ToLower(d.Name) + ".proto")
+	if err != nil {
+		panic(err)
+	}
+
+	t.Execute(f, d)
 }
 
 var ProtoTemplate = `syntax = "proto3";

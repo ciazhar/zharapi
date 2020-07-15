@@ -18,7 +18,13 @@ func main() {
 	flag.Parse()
 
 	t := template.Must(template.New("queue").Funcs(funcMap).Parse(ErrorTemplate))
-	t.Execute(os.Stdout, d)
+
+	f, err := os.Create("common/error/error.go")
+	if err != nil {
+		panic(err)
+	}
+
+	t.Execute(f, d)
 }
 
 var ErrorTemplate = `

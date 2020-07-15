@@ -18,7 +18,13 @@ func main() {
 	flag.Parse()
 
 	t := template.Must(template.New("queue").Funcs(funcMap).Parse(LoggerTemplate))
-	t.Execute(os.Stdout, d)
+
+	f, err := os.Create("common/logger/log.go")
+	if err != nil {
+		panic(err)
+	}
+
+	t.Execute(f, d)
 }
 
 var LoggerTemplate = `

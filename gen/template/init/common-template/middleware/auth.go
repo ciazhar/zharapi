@@ -18,7 +18,13 @@ func main() {
 	flag.Parse()
 
 	t := template.Must(template.New("queue").Funcs(funcMap).Parse(AuthTemplate))
-	t.Execute(os.Stdout, d)
+
+	f, err := os.Create("common/middleware/auth.go")
+	if err != nil {
+		panic(err)
+	}
+
+	t.Execute(f, d)
 }
 
 var AuthTemplate = `

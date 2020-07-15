@@ -18,7 +18,13 @@ func main() {
 	flag.Parse()
 
 	t := template.Must(template.New("queue").Funcs(funcMap).Parse(GatewayTemplate))
-	t.Execute(os.Stdout, d)
+
+	f, err := os.Create("cmd/gateway.go")
+	if err != nil {
+		panic(err)
+	}
+
+	t.Execute(f, d)
 }
 
 var GatewayTemplate = `

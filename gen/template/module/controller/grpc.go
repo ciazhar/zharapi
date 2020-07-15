@@ -19,7 +19,13 @@ func main() {
 	flag.Parse()
 
 	t := template.Must(template.New("t").Funcs(funcMap).Parse(GRPCTemplate))
-	t.Execute(os.Stdout, d)
+
+	f, err := os.Create("src/" + strings.ToLower(d.Name) + "/controller/grpc/" + strings.ToLower(d.Name) + "_grpc_controller.go")
+	if err != nil {
+		panic(err)
+	}
+
+	t.Execute(f, d)
 }
 
 var GRPCTemplate = `

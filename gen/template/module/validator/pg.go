@@ -19,7 +19,13 @@ func main() {
 	flag.Parse()
 
 	t := template.Must(template.New("t").Funcs(funcMap).Parse(PgValidatorTemplate))
-	t.Execute(os.Stdout, d)
+
+	f, err := os.Create("src/" + strings.ToLower(d.Name) + "/validator/postgres/" + strings.ToLower(d.Name) + "_pg_validator.go")
+	if err != nil {
+		panic(err)
+	}
+
+	t.Execute(f, d)
 }
 
 var PgValidatorTemplate = `

@@ -18,7 +18,13 @@ func main() {
 	flag.Parse()
 
 	t := template.Must(template.New("queue").Funcs(funcMap).Parse(MainTemplate))
-	t.Execute(os.Stdout, d)
+
+	f, err := os.Create("cmd/main.go")
+	if err != nil {
+		panic(err)
+	}
+
+	t.Execute(f, d)
 }
 
 var MainTemplate = `

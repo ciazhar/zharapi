@@ -19,7 +19,13 @@ func main() {
 	flag.Parse()
 
 	t := template.Must(template.New("t").Funcs(funcMap).Parse(UsecaseTemplate))
-	t.Execute(os.Stdout, d)
+
+	f, err := os.Create("src/" + strings.ToLower(d.Name) + "/usecase/" + strings.ToLower(d.Name) + "_usecase.go")
+	if err != nil {
+		panic(err)
+	}
+
+	t.Execute(f, d)
 }
 
 var UsecaseTemplate = `

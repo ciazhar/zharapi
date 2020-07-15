@@ -26,74 +26,74 @@ init-gomod:
 
 init-config-file:
 	go run gen/template/init/config.go \
-		-package=$(package) > config.json ;
+		-package=$(package);
 
 init-app:
 	mkdir -p app
 	go run gen/template/init/app.go \
-		-package=$(package) > app/app.go ;
+		-package=$(package)
 
 init-env:
 	mkdir -p common/env
 	go run gen/template/init/common-template/env/env.go \
-		-package=$(package) > common/env/env.go
+		-package=$(package)
 
 init-main:
 	mkdir -p cmd
 	go run gen/template/init/main.go \
-		-package=$(package) > cmd/main.go ;
+		-package=$(package);
 
 init-grpc:
 	mkdir -p cmd
 	go run gen/template/init/grpc-main.go \
-		-package=$(package) > cmd/grpc-main.go ;
+		-package=$(package);
 
 init-gateway:
 	mkdir -p cmd
 	go run gen/template/init/gateway.go \
-		-package=$(package) > cmd/gateway.go ;
+		-package=$(package);
 
 init-middleware:
 	mkdir -p common/middleware
 	go run gen/template/init/common-template/middleware/auth.go \
-		-package=$(package) > common/middleware/auth.go
+		-package=$(package)
 	go run gen/template/init/common-template/middleware/cors.go \
-		-package=$(package) > common/middleware/cors.go
+		-package=$(package)
 
 init-error:
 	mkdir -p common/error
 	go run gen/template/init/common-template/error/error.go \
-		-package=$(package) > common/error/error.go
+		-package=$(package)
 	gomodifytags -file common/error/error.go -struct Error -add-tags json -w
 
 init-logger:
 	mkdir -p common/logger
 	go run gen/template/init/common-template/logger/logger.go \
-		-package=$(package) > common/logger/log.go
+		-package=$(package)
 
 init-pg:
 	mkdir -p common/db/pg
 	go run gen/template/init/common-template/db/pg.go \
-		-package=$(package) > common/db/pg/pg.go
+		-package=$(package)
 
 init-validator:
 	mkdir -p common/validator
 	go run gen/template/init/common-template/validator/validator.go \
-		-package=$(package) > common/validator/validator.go
+		-package=$(package)
 
 init-string:
 	mkdir -p common/string
 	go run gen/template/init/common-template/string/string.go \
-		-package=$(package) > common/string/string.go
+		-package=$(package)
 
 init-rest:
 	mkdir -p common/rest
 	go run gen/template/init/common-template/rest/rest.go \
-		-package=$(package) > common/rest/param.go
+		-package=$(package)
 	go run gen/template/init/common-template/rest/gin_rest.go \
-		-package=$(package) > common/rest/gin_param.go
+		-package=$(package)
 	go run gen/template/init/common-template/rest/response.go \
-			-package=$(package) > common/rest/response.go
+			-package=$(package)
 
 generate: generate-init \
 	generate-model \
@@ -109,13 +109,13 @@ generate-init:
 	mkdir -p src/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')
 	go run gen/template/module/init.go \
 		-name=$(name) \
-		-package=$(package) > src/$(name)/init.go
+		-package=$(package)
 
 generate-model:
 	mkdir -p src/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')/model
 	go run gen/template/module/model/model.go \
 		-name=$(name) \
-		-package=$(package) > src/$(name)/model/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]').go
+		-package=$(package)
 
 generate-proto:
 	mkdir -p grpc/proto
@@ -123,7 +123,7 @@ generate-proto:
 	mkdir -p grpc/generated/swagger
 	go run gen/template/module/model/proto.go \
 		-name=$(name) \
-		-package=$(package) > grpc/proto/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]').proto
+		-package=$(package)
 	gomodifytags -file src/$(name)/model/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]').go -struct $(name) -add-tags json -w
 	gomodifytags -file src/$(name)/model/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]').go -line 6 -add-tags pg:$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]') -w
 	gomodifytags -file src/$(name)/model/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]').go -line 6 -remove-tags json -w
@@ -140,31 +140,31 @@ generate-postgres-repository:
 	mkdir -p src/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')/repository/postgres
 	go run gen/template/module/repository/pg.go \
     	-name=$(name) \
-    	-package=$(package) > src/$(name)/repository/postgres/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')_pg_repo.go
+    	-package=$(package)
 
 generate-postgres-validator:
 	mkdir -p src/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')/validator/postgres
 	go run gen/template/module/validator/pg.go \
 		-name=$(name) \
-		-package=$(package) > src/$(name)/validator/postgres/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')_pg_validator.go
+		-package=$(package)
 
 generate-usecase:
 	mkdir -p src/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')/usecase
 	go run gen/template/module/usecase/usecase.go \
 		-name=$(name) \
-		-package=$(package) > src/$(name)/usecase/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')_usecase.go
+		-package=$(package)
 
 generate-rest-controller:
 	mkdir -p src/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')/controller/rest
 	go run gen/template/module/controller/rest.go \
 		-name=$(name) \
-		-package=$(package) > src/$(name)/controller/rest/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')_rest_controller.go
+		-package=$(package)
 
 generate-grpc-controller:
 	mkdir -p src/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')/controller/grpc
 	go run gen/template/module/controller/grpc.go \
 		-name=$(name) \
-		-package=$(package) > src/$(name)/controller/grpc/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]')_grpc_controller.go
+		-package=$(package)
 
 run:
 	go run cmd/main.go

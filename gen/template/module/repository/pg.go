@@ -19,7 +19,13 @@ func main() {
 	flag.Parse()
 
 	t := template.Must(template.New("t").Funcs(funcMap).Parse(Template))
-	t.Execute(os.Stdout, d)
+
+	f, err := os.Create("src/" + strings.ToLower(d.Name) + "/repository/postgres/" + strings.ToLower(d.Name) + "_pg_repo.go")
+	if err != nil {
+		panic(err)
+	}
+
+	t.Execute(f, d)
 }
 
 var Template = `
