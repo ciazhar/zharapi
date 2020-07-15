@@ -3,7 +3,6 @@ install:
     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
     github.com/golang/protobuf/protoc-gen-go
-	github.com/betacraft/easytags
 	github.com/fatih/gomodifytags
 
 init: init-gomod \
@@ -65,7 +64,7 @@ init-error:
 	mkdir -p common/error
 	go run gen/template/init/common-template/error/error.go \
 		-package=$(package) > common/error/error.go
-	easytags common/error/error.go
+	gomodifytags -file common/error/error.go -struct Error -add-tags json -w
 
 init-logger:
 	mkdir -p common/logger
@@ -125,7 +124,9 @@ generate-proto:
 	go run gen/template/module/model/proto.go \
 		-name=$(name) \
 		-package=$(package) > grpc/proto/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]').proto
-	easytags src/$(name)/model/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]').go
+	gomodifytags -file src/$(name)/model/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]').go -struct $(name) -add-tags json -w
+	gomodifytags -file src/$(name)/model/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]').go -line 6 -add-tags pg:$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]') -w
+	gomodifytags -file src/$(name)/model/$(shell echo '$(name)' | tr '[:upper:]' '[:lower:]').go -line 6 -remove-tags json -w
 	protoc -I/usr/local/include -I. \
 		-I${GOPATH}/src \
 		-I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
