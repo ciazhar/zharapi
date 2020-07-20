@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/ciazhar/zharapi/gen/template/data"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"text/template"
 )
@@ -26,6 +27,13 @@ func InitError(d data.Data, funcMap map[string]interface{}) {
 
 	if err := t.Execute(f, d); err != nil {
 		panic(err)
+	} else {
+		output, err := exec.Command("gomodifytags", "-file", "common/error/error.go", "-struct", "Error", "-add-tags", "json", "-w").CombinedOutput()
+		if err != nil {
+			os.Stderr.WriteString(err.Error())
+			fmt.Println()
+		}
+		fmt.Println(string(output))
 	}
 }
 

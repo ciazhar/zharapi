@@ -68,6 +68,7 @@ func main() {
 			case "init":
 				usecase.Init(d, funcMap)
 			case "module":
+				usecase.Module(d, funcMap)
 			}
 
 			return nil

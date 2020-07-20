@@ -1,31 +1,53 @@
-package main
+package model
 
 import (
-	"flag"
+	"fmt"
 	"github.com/ciazhar/zharapi/gen/template/data"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"strings"
 	"text/template"
 )
 
-func main() {
-	funcMap := template.FuncMap{
-		"toLower": strings.ToLower,
+func InitModel(d data.Data, funcMap map[string]interface{}) {
+
+	fmt.Println("init model")
+
+	t := template.Must(template.New("queue").Funcs(funcMap).Parse(Template))
+
+	if _, err := os.Stat("src/" + strings.ToLower(d.Name) + "/model/"); os.IsNotExist(err) {
+		newPath := filepath.Join(".", "src/"+strings.ToLower(d.Name)+"/model/")
+		err := os.MkdirAll(newPath, os.ModePerm)
+		if err != nil {
+			panic(err)
+		}
 	}
-
-	var d data.Data
-	flag.StringVar(&d.Package, "package", "github.com/ciazhar/example", "The package used for the queue being generated")
-	flag.StringVar(&d.Name, "name", "", "The name used for the queue being generated. This should start with a capital letter so that it is exported.")
-	flag.Parse()
-
-	t := template.Must(template.New("t").Funcs(funcMap).Parse(Template))
 
 	f, err := os.Create("src/" + strings.ToLower(d.Name) + "/model/" + strings.ToLower(d.Name) + ".go")
 	if err != nil {
 		panic(err)
 	}
 
-	t.Execute(f, d)
+	if err := t.Execute(f, d); err != nil {
+		panic(err)
+	} else {
+		output, err := exec.Command("gomodifytags", "-file", "src/"+d.Name+"/model/"+strings.ToLower(d.Name)+".go", "-struct", d.Name, "-add-tags", "json", "--skip-unexported", "-w").CombinedOutput()
+		if err != nil {
+			os.Stderr.WriteString(err.Error())
+			fmt.Println()
+		}
+		fmt.Println(string(output))
+
+		output, err = exec.Command("gomodifytags", "-file", "src/"+d.Name+"/model/"+strings.ToLower(d.Name)+".go", "-line", "6", "-add-tags", "pg:"+strings.ToLower(d.Name), "-w").CombinedOutput()
+		if err != nil {
+			os.Stderr.WriteString(err.Error())
+			fmt.Println()
+		}
+		fmt.Println(string(output))
+
+	}
+
 }
 
 var Template = `

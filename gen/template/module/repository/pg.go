@@ -1,31 +1,33 @@
-package main
+package repository
 
 import (
-	"flag"
+	"fmt"
 	"github.com/ciazhar/zharapi/gen/template/data"
 	"os"
+	"path/filepath"
 	"strings"
 	"text/template"
 )
 
-func main() {
-	funcMap := template.FuncMap{
-		"toLower": strings.ToLower,
+func InitPostgresRepository(d data.Data, funcMap map[string]interface{}) {
+
+	fmt.Println("init postgres repository")
+
+	t := template.Must(template.New("queue").Funcs(funcMap).Parse(Template))
+
+	if _, err := os.Stat("src/" + strings.ToLower(d.Name) + "/repository/postgres/"); os.IsNotExist(err) {
+		newPath := filepath.Join(".", "src/"+strings.ToLower(d.Name)+"/repository/postgres/")
+		os.MkdirAll(newPath, os.ModePerm)
 	}
-
-	var d data.Data
-	flag.StringVar(&d.Package, "package", "github.com/ciazhar/example", "The package used for the queue being generated")
-	flag.StringVar(&d.Name, "name", "", "The name used for the queue being generated. This should start with a capital letter so that it is exported.")
-	flag.Parse()
-
-	t := template.Must(template.New("t").Funcs(funcMap).Parse(Template))
 
 	f, err := os.Create("src/" + strings.ToLower(d.Name) + "/repository/postgres/" + strings.ToLower(d.Name) + "_pg_repo.go")
 	if err != nil {
 		panic(err)
 	}
 
-	t.Execute(f, d)
+	if err := t.Execute(f, d); err != nil {
+		panic(err)
+	}
 }
 
 var Template = `
