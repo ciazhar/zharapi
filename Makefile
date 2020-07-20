@@ -178,3 +178,4 @@ run-gateway:
 example:
 	make init package="github.com/ciazhar/zharapi"
 	make generate package="github.com/ciazhar/zharapi" name="List"
+	zharapi -app="init" -package="github.com/ciazhar/zharapi"
