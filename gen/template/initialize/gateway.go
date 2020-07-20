@@ -1,30 +1,32 @@
-package main
+package initialize
 
 import (
-	"flag"
+	"fmt"
 	"github.com/ciazhar/zharapi/gen/template/data"
+	"html/template"
 	"os"
-	"strings"
-	"text/template"
+	"path/filepath"
 )
 
-func main() {
-	funcMap := template.FuncMap{
-		"toLower": strings.ToLower,
-	}
+func InitGateway(d data.Data, funcMap map[string]interface{}) {
 
-	var d data.Data
-	flag.StringVar(&d.Package, "package", "github.com/ciazhar/example", "The package used for the queue being generated")
-	flag.Parse()
+	fmt.Println("init gateway")
 
 	t := template.Must(template.New("queue").Funcs(funcMap).Parse(GatewayTemplate))
+
+	if _, err := os.Stat("cmd"); os.IsNotExist(err) {
+		newPath := filepath.Join(".", "cmd")
+		os.MkdirAll(newPath, os.ModePerm)
+	}
 
 	f, err := os.Create("cmd/gateway.go")
 	if err != nil {
 		panic(err)
 	}
 
-	t.Execute(f, d)
+	if err := t.Execute(f, d); err != nil {
+		panic(err)
+	}
 }
 
 var GatewayTemplate = `
@@ -33,7 +35,6 @@ package main
 import (
 	"flag"
 	"{{.Package}}/common/middleware"
-	"{{.Package}}/grpc/generated/golang"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 	"net/http"
@@ -50,12 +51,9 @@ var (
 
 func newGateway(ctx context.Context, opts ...runtime.ServeMuxOption) (http.Handler, error) {
 	mux := runtime.NewServeMux(opts...)
-	dialOpts := []grpc.DialOption{grpc.WithInsecure()}
+	_ = []grpc.DialOption{grpc.WithInsecure()}
 
 	//register module here
-	if err := golang.RegisterListServiceHandlerFromEndpoint(ctx, mux, *serverEndpoint, dialOpts); err != nil {
-		return mux, err
-	}
 
 	return mux, nil
 }

@@ -1,33 +1,35 @@
-package main
+package rest
 
 import (
-	"flag"
+	"fmt"
 	"github.com/ciazhar/zharapi/gen/template/data"
 	"os"
-	"strings"
+	"path/filepath"
 	"text/template"
 )
 
-func main() {
-	funcMap := template.FuncMap{
-		"toLower": strings.ToLower,
+func InitGinRequest(d data.Data, funcMap map[string]interface{}) {
+
+	fmt.Println("init gin request")
+
+	t := template.Must(template.New("queue").Funcs(funcMap).Parse(GinRequestTemplate))
+
+	if _, err := os.Stat("common/rest"); os.IsNotExist(err) {
+		newPath := filepath.Join(".", "common/rest")
+		os.MkdirAll(newPath, os.ModePerm)
 	}
 
-	var d data.Data
-	flag.StringVar(&d.Package, "package", "github.com/ciazhar/example", "The package used for the queue being generated")
-	flag.Parse()
-
-	t := template.Must(template.New("queue").Funcs(funcMap).Parse(GinRestTemplate))
-
-	f, err := os.Create("common/rest/param.go")
+	f, err := os.Create("common/rest/gin_request.go")
 	if err != nil {
 		panic(err)
 	}
 
-	t.Execute(f, d)
+	if err := t.Execute(f, d); err != nil {
+		panic(err)
+	}
 }
 
-var GinRestTemplate = `
+var GinRequestTemplate = `
 package rest
 
 import (

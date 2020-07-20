@@ -1,30 +1,32 @@
-package main
+package initialize
 
 import (
-	"flag"
+	"fmt"
 	"github.com/ciazhar/zharapi/gen/template/data"
+	"html/template"
 	"os"
-	"strings"
-	"text/template"
+	"path/filepath"
 )
 
-func main() {
-	funcMap := template.FuncMap{
-		"toLower": strings.ToLower,
-	}
+func InitApp(d data.Data, funcMap map[string]interface{}) {
 
-	var d data.Data
-	flag.StringVar(&d.Package, "package", "github.com/ciazhar/example", "The package used for the queue being generated")
-	flag.Parse()
+	fmt.Println("init app")
 
 	t := template.Must(template.New("queue").Funcs(funcMap).Parse(AppTemplate))
+
+	if _, err := os.Stat("app"); os.IsNotExist(err) {
+		newPath := filepath.Join(".", "app")
+		os.MkdirAll(newPath, os.ModePerm)
+	}
 
 	f, err := os.Create("app/app.go")
 	if err != nil {
 		panic(err)
 	}
 
-	t.Execute(f, d)
+	if err := t.Execute(f, d); err != nil {
+		panic(err)
+	}
 }
 
 var AppTemplate = `

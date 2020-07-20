@@ -1,30 +1,32 @@
-package main
+package error
 
 import (
-	"flag"
+	"fmt"
 	"github.com/ciazhar/zharapi/gen/template/data"
 	"os"
-	"strings"
+	"path/filepath"
 	"text/template"
 )
 
-func main() {
-	funcMap := template.FuncMap{
-		"toLower": strings.ToLower,
-	}
+func InitError(d data.Data, funcMap map[string]interface{}) {
 
-	var d data.Data
-	flag.StringVar(&d.Package, "package", "github.com/ciazhar/example", "The package used for the queue being generated")
-	flag.Parse()
+	fmt.Println("init error")
 
 	t := template.Must(template.New("queue").Funcs(funcMap).Parse(ErrorTemplate))
+
+	if _, err := os.Stat("common/error"); os.IsNotExist(err) {
+		newPath := filepath.Join(".", "common/error")
+		os.MkdirAll(newPath, os.ModePerm)
+	}
 
 	f, err := os.Create("common/error/error.go")
 	if err != nil {
 		panic(err)
 	}
 
-	t.Execute(f, d)
+	if err := t.Execute(f, d); err != nil {
+		panic(err)
+	}
 }
 
 var ErrorTemplate = `

@@ -1,30 +1,32 @@
-package main
+package rest
 
 import (
-	"flag"
+	"fmt"
 	"github.com/ciazhar/zharapi/gen/template/data"
 	"os"
-	"strings"
+	"path/filepath"
 	"text/template"
 )
 
-func main() {
-	funcMap := template.FuncMap{
-		"toLower": strings.ToLower,
-	}
+func InitResponse(d data.Data, funcMap map[string]interface{}) {
 
-	var d data.Data
-	flag.StringVar(&d.Package, "package", "github.com/ciazhar/example", "The package used for the queue being generated")
-	flag.Parse()
+	fmt.Println("init response")
 
 	t := template.Must(template.New("queue").Funcs(funcMap).Parse(ResponseTemplate))
 
-	f, err := os.Create("common/rest/gin_param.go")
+	if _, err := os.Stat("common/rest"); os.IsNotExist(err) {
+		newPath := filepath.Join(".", "common/rest")
+		os.MkdirAll(newPath, os.ModePerm)
+	}
+
+	f, err := os.Create("common/rest/response.go")
 	if err != nil {
 		panic(err)
 	}
 
-	t.Execute(f, d)
+	if err := t.Execute(f, d); err != nil {
+		panic(err)
+	}
 }
 
 var ResponseTemplate = `
