@@ -34,6 +34,10 @@ var ConfigTemplate = `
   "postgres.password": "",
   "postgres.database": "orm_test",
   "postgres.port": "5432",
+  "mongo.url": "mongodb://localhost:27017",
+  "mongo.username": "root",
+  "mongo.password": "",
+  "mongo.database": "testing",
   "grpc.address": "0.0.0.0:50051"
 }
 `

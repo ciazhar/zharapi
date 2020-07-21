@@ -17,6 +17,7 @@ func Module(d data.Data, funcMap map[string]interface{}) {
 	model.InitProto(d, funcMap)
 	repository.InitPostgresRepository(d, funcMap)
 	validator.InitPostgresValidator(d, funcMap)
+	repository.InitMongoRepository(d, funcMap)
 	usecase.InitUseCase(d, funcMap)
 	controller.InitRestController(d, funcMap)
 	controller.InitGRPCController(d, funcMap)

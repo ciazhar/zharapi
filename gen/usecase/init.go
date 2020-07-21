@@ -27,6 +27,7 @@ func Init(d data.Data, funcMap map[string]interface{}) {
 	error2.InitError(d, funcMap)
 	logger.InitLogger(d, funcMap)
 	db.InitPG(d, funcMap)
+	db.InitMongo(d, funcMap)
 	validator.InitValidator(d, funcMap)
 	rest.InitGinRequest(d, funcMap)
 	rest.InitRequest(d, funcMap)
